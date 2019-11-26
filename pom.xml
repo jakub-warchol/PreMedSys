@@ -113,7 +113,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <release>11</release>  <!-- same as <java.version> -->
+                    <source>11</source><!-- same as <java.version> -->
                     <target>11</target>    <!-- same as <java.version> -->
                 </configuration>
             </plugin>
