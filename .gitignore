@@ -32,3 +32,7 @@ build/
 
 ### Maven ###
 log/
+
+### RSA ###
+git_rsa.pub
+git_rsa
