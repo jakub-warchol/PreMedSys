@@ -1,6 +1,5 @@
 package pl.pwsztar.premedsys;
 
-import io.vavr.collection.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +9,7 @@ import pl.pwsztar.premedsys.domain.DiseaseFacade;
 import pl.pwsztar.premedsys.dto.DiseasesDto;
 import pl.pwsztar.premedsys.dto.SymptomesDto;
 import pl.pwsztar.premedsys.utils.WebPageUtil;
-
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
@@ -28,12 +27,10 @@ public class PreMedSysController {
   @GetMapping("diseases")
   @ResponseBody
   public List<DiseasesDto> getAll() {
-    return diseaseFacade.getDiseases();
+    return diseaseFacade.getDiseases().toJavaList();
   }
 
   @GetMapping("symptomes")
   @ResponseBody
-  public List<SymptomesDto> getAllSymptomes() {
-    return diseaseFacade.getDiseasesSymptomes();
-  }
+  public List<SymptomesDto> getAllSymptomes() { return diseaseFacade.getDiseasesSymptomes().toJavaList(); }
 }
