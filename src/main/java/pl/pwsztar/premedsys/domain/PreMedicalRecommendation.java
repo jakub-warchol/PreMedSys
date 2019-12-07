@@ -23,7 +23,6 @@ class PreMedicalRecommendation {
   @Column(name = "recommendation_id")
   Long recommendationId;
 
-  //TODO: one to many
   @Column(name = "disease_id")
   Long diseaseId;
 

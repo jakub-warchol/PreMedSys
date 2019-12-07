@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 class InMemoryDiseasesSymptomesRepository implements DiseasesSymptomesRepository{
 
@@ -129,5 +130,13 @@ class InMemoryDiseasesSymptomesRepository implements DiseasesSymptomesRepository
   @Override
   public <S extends DiseasesSymptomes> boolean exists(Example<S> example) {
     return false;
+  }
+
+  @Override
+  public List<DiseasesSymptomes> findBySymptomeIn(List<String> symptomes) {
+    return entity.values()
+      .stream()
+      .filter(el -> symptomes.contains(el.getSymptome()))
+      .collect(Collectors.toList());
   }
 }

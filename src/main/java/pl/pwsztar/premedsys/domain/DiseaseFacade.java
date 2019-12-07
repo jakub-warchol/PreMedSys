@@ -40,4 +40,18 @@ public class DiseaseFacade {
     Map<Object, Boolean> seen = new ConcurrentHashMap<>();
     return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
   }
+
+  public List<DiseasesDto> getDiseasesBySymptomesName(List<String> symptomes) {
+    List<Long> symptomeIds = List.ofAll(symptomesRepository.findBySymptomeIn(symptomes.toJavaList()))
+      .map(DiseasesSymptomes::getDiseaseId);
+
+    List<DiseasesDto> diseasesList = List.ofAll(diseasesRepository.findAllById(symptomeIds.toJavaList()))
+      .map(Diseases::dto);
+
+    if(diseasesList.isEmpty()) {
+      //TODO: exception/either
+      return List.empty();
+    }
+    return diseasesList;
+  }
 }

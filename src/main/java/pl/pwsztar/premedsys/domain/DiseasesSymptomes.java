@@ -21,8 +21,8 @@ class DiseasesSymptomes {
   @Column(name = "disease_symptomes_id")
   Long diseaseSymptomesId;
 
-  //TODO: one to many
   @Column(name = "disease_id")
+  @Getter
   Long diseaseId;
 
   @Column(name = "symptomes_content")

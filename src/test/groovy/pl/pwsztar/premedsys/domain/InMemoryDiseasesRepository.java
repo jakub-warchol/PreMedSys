@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 class InMemoryDiseasesRepository  implements DiseasesRepository {
 
@@ -29,7 +30,13 @@ class InMemoryDiseasesRepository  implements DiseasesRepository {
 
   @Override
   public List<Diseases> findAllById(Iterable<Long> iterable) {
-    return null;
+    List<Long> list = new ArrayList<>();
+    iterable.forEach(list::add);
+
+    return entity.values()
+      .stream()
+      .filter(el -> list.contains(el.getDiseaseId()))
+      .collect(Collectors.toList());
   }
 
   @Override
