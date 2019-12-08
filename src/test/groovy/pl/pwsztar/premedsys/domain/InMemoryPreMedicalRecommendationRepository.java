@@ -25,10 +25,9 @@ class InMemoryPreMedicalRecommendationRepository implements PreMedicalRecommenda
 
   @Override
   public List<PreMedicalRecommendation> findAllByDiseaseIdIn(List<Long> ids) {
-    List<PreMedicalRecommendation> collect = entity.values().stream()
+    return  entity.values().stream()
       .filter(el -> ids.contains(el.getDiseaseId()))
       .collect(Collectors.toList());
-    return collect;
   }
 
   /*
