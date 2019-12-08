@@ -1,10 +1,8 @@
 package pl.pwsztar.premedsys.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import pl.pwsztar.premedsys.dto.SymptomesDto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,10 +21,17 @@ class DiseasesSymptomes {
   @Column(name = "disease_symptomes_id")
   Long diseaseSymptomesId;
 
-  //TODO: one to many
   @Column(name = "disease_id")
+  @Getter
   Long diseaseId;
 
   @Column(name = "symptomes_content")
+  @Getter
   String symptome;
+
+  public SymptomesDto dto() {
+    return SymptomesDto.builder()
+      .symptomeName(symptome)
+      .build();
+  }
 }
