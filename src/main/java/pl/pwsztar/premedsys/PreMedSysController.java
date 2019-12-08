@@ -1,26 +1,27 @@
 package pl.pwsztar.premedsys;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import pl.pwsztar.premedsys.domain.DiseaseFacade;
 import pl.pwsztar.premedsys.dto.DiseasesDto;
 import pl.pwsztar.premedsys.dto.PreMedicalResultsDto;
 import pl.pwsztar.premedsys.dto.SymptomesDto;
 import pl.pwsztar.premedsys.utils.WebPageUtil;
-
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @RequestMapping("/")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PreMedSysController {
+
   DiseaseFacade diseaseFacade;
 
   @Autowired
-  public PreMedSysController(DiseaseFacade diseaseFacade) {
+  PreMedSysController(@Autowired DiseaseFacade diseaseFacade) {
     this.diseaseFacade = diseaseFacade;
   }
 
@@ -32,15 +33,15 @@ public class PreMedSysController {
 
   @GetMapping("diseases")
   @ResponseBody
-  public List<DiseasesDto> getAllDiseases() {
-    return diseaseFacade.getDiseases().toJavaList();
-  }
+  public ResponseEntity<List<DiseasesDto>> getAllDiseases() { return ResponseEntity.ok(diseaseFacade.getDiseases().toJavaList()); }
 
   @GetMapping("symptomes")
   @ResponseBody
-  public List<SymptomesDto> getAllSymptomes() { return diseaseFacade.getDiseasesSymptomes().toJavaList(); }
+  public ResponseEntity<List<SymptomesDto>> getAllSymptomes() { return ResponseEntity.ok(diseaseFacade.getDiseasesSymptomes().toJavaList()); }
 
-  @GetMapping("all")
-  @ResponseBody
-  public List<PreMedicalResultsDto> getDiseasesBySymptomes() {return diseaseFacade.getDiseasesAndRecommendationsBySymptomesName(Arrays.asList("Duszność", "Zmęczenie", "Zawroty głowy")).toJavaList();};
+  @PostMapping("recognition")
+  public ResponseEntity<List<PreMedicalResultsDto>> getDiseasesBySymptomes(@RequestBody List<String> symptomes) {
+    List<PreMedicalResultsDto> results = diseaseFacade.getDiseasesAndRecommendationsBySymptomesName(symptomes).toJavaList();
+    return ResponseEntity.ok(results);
+  };
 }
