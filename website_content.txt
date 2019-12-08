@@ -14,8 +14,8 @@
                 Go to:
             </h3>
             <ul>
-                <li> Swagger</li>
-                <li>list of all recognizable-implemented diseases (JSON) </li>
+                <li><a href="/swagger-ui.html">Swagger</a></li>
+                <li><a href="/diseases">list of all recognizable-implemented diseases (JSON) </a></li>
             </ul>
             <h4 style="font-style: italic; color: chocolate">
                 Or look up the dancing dog ;) ------------------------------------->

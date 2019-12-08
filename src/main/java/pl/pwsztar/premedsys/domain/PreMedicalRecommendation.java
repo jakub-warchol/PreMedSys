@@ -1,9 +1,6 @@
 package pl.pwsztar.premedsys.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Column;
@@ -23,10 +20,11 @@ class PreMedicalRecommendation {
   @Column(name = "recommendation_id")
   Long recommendationId;
 
-  //TODO: one to many
   @Column(name = "disease_id")
+  @Getter
   Long diseaseId;
 
   @Column(name = "recommendation_content")
+  @Getter
   String recommendation;
 }
