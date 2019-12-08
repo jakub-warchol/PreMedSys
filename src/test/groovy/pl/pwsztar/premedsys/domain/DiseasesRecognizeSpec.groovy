@@ -22,7 +22,6 @@ class DiseasesRecognizeSpec  extends Specification {
     }
     symptomesRepository.save(new DiseasesSymptomes(symptomesIds.get(2), diseasesIds.get(1), "Symptome" + 3))
     symptomesRepository.save(new DiseasesSymptomes(symptomesIds.get(2), diseasesIds.get(2), "Symptome" + 2))
-    recommendationRepository.save(new PreMedicalRecommendation(recomendationsIds.get(0), diseasesIds.get(0), "Recommendation" + 2))
   }
 
 
@@ -30,16 +29,19 @@ class DiseasesRecognizeSpec  extends Specification {
     when: "user asks for symptomes"
       def results = diseaseFacade.getDiseasesSymptomes()
     then: "user gets list of them"
-      results.map({el -> el.symptomeName}).sorted().toJavaList() == ["Symptome0", "Symptome1", "Symptome2", "Symptome3"]
+      results.map({el -> el.symptomeName}).sorted().toJavaList() ==
+        ["Symptome0", "Symptome1", "Symptome2", "Symptome3"]
   }
 
   def "user should be able to get list of all all recognizable diseases"() {
     when: "user asks for diseases"
       def results = diseaseFacade.getDiseases()
     then: "user gets list of them latin name"
-      results.map({el -> el.diseaseLatinName}).sorted().toJavaList() == ["Morbus0", "Morbus1", "Morbus2"]
+      results.map({el -> el.diseaseLatinName}).sorted().toJavaList() ==
+        ["Morbus0", "Morbus1", "Morbus2"]
     and: "user gets list of them polish name"
-      results.map({el -> el.diseaseName}).sorted().toJavaList() == ["Choroba0", "Choroba1", "Choroba2"]
+      results.map({el -> el.diseaseName}).sorted().toJavaList() ==
+        ["Choroba0", "Choroba1", "Choroba2"]
   }
 
   def "user should be able to get list of diseases based on his pointed symptomes"() {
@@ -47,5 +49,16 @@ class DiseasesRecognizeSpec  extends Specification {
       def results = diseaseFacade.getDiseasesBySymptomesName(List.of("Symptome2", "Symptome3"))
     then: "user gets list of diseases"
       results.map({el -> el.diseaseName}).sorted().toJavaList() == ["Choroba1", "Choroba2"]
+  }
+
+  def "user should be able to get probable recognition based on symptomes"() {
+    when: "user selects symptomes"
+      def results = diseaseFacade.getDiseasesAndRecommendationsBySymptomesName(["Symptome2", "Symptome3", "Symptome0"])
+    then: "user gets recommendations"
+      results.map({el -> el.recommendations}).sorted().toJavaList() ==
+        ["Recommendation0", "Recommendation1", "Recommendation2"]
+    and: "user gets disease name"
+      results.map({el -> el.diseaseName}).sorted().toJavaList() ==
+        ["Choroba0", "Choroba1", "Choroba2"]
   }
 }

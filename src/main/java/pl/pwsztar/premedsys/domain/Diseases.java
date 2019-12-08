@@ -8,22 +8,23 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
+
 
 @Entity
 @Table(name = "diseases")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Diseases implements Serializable {
+class Diseases {
 
   @Id
   @Column(name = "disease_id")
+  @Getter
   Long diseaseId;
 
   @Column(name = "disease_name")
+  @Getter
   String diseaseName;
 
   @Column(name = "disease_name_latin")

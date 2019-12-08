@@ -1,6 +1,5 @@
 package pl.pwsztar.premedsys.dto;
 
-import io.vavr.collection.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +12,6 @@ import java.io.Serializable;
 @Getter
 public class PreMedicalResultsDto implements Serializable {
   String diseaseName;
-  Long diseaseProbability;
-  List<String> recommendations;
+  Double diseaseProbability;
+  String recommendations;
 }

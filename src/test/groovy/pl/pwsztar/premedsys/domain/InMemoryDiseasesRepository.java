@@ -19,16 +19,6 @@ class InMemoryDiseasesRepository  implements DiseasesRepository {
   }
 
   @Override
-  public List<Diseases> findAll(Sort sort) {
-    return null;
-  }
-
-  @Override
-  public Page<Diseases> findAll(Pageable pageable) {
-    return null;
-  }
-
-  @Override
   public List<Diseases> findAllById(Iterable<Long> iterable) {
     List<Long> list = new ArrayList<>();
     iterable.forEach(list::add);
@@ -37,6 +27,24 @@ class InMemoryDiseasesRepository  implements DiseasesRepository {
       .stream()
       .filter(el -> list.contains(el.getDiseaseId()))
       .collect(Collectors.toList());
+  }
+
+  @Override
+  public Diseases save(Diseases s) {
+    return entity.put(new Random().nextLong(), s);
+  }
+
+  /*
+  * Unused methods */
+
+  @Override
+  public List<Diseases> findAll(Sort sort) {
+    return null;
+  }
+
+  @Override
+  public Page<Diseases> findAll(Pageable pageable) {
+    return null;
   }
 
   @Override
@@ -62,11 +70,6 @@ class InMemoryDiseasesRepository  implements DiseasesRepository {
   @Override
   public void deleteAll() {
 
-  }
-
-  @Override
-  public Diseases save(Diseases s) {
-    return entity.put(new Random().nextLong(), s);
   }
 
   @Override

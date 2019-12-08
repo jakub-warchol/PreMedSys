@@ -18,6 +18,29 @@ class InMemoryDiseasesSymptomesRepository implements DiseasesSymptomesRepository
   }
 
   @Override
+  public DiseasesSymptomes save(DiseasesSymptomes s) {
+    return entity.put(new Random().nextLong(), s);
+  }
+
+  @Override
+  public List<DiseasesSymptomes> findBySymptomeIn(List<String> symptomes) {
+    return entity.values()
+      .stream()
+      .filter(el -> symptomes.contains(el.getSymptome()))
+      .collect(Collectors.toList());
+  }
+
+  @Override
+  public Long countByDiseaseId(Long diseaseId) {
+    return entity.values().stream()
+      .filter(el -> el.getDiseaseId().equals(diseaseId))
+      .count();
+  }
+
+  /*
+  * Unused methods */
+
+  @Override
   public List<DiseasesSymptomes> findAll(Sort sort) {
     return null;
   }
@@ -55,11 +78,6 @@ class InMemoryDiseasesSymptomesRepository implements DiseasesSymptomesRepository
   @Override
   public void deleteAll() {
 
-  }
-
-  @Override
-  public DiseasesSymptomes save(DiseasesSymptomes s) {
-    return entity.put(new Random().nextLong(), s);
   }
 
   @Override
@@ -130,13 +148,5 @@ class InMemoryDiseasesSymptomesRepository implements DiseasesSymptomesRepository
   @Override
   public <S extends DiseasesSymptomes> boolean exists(Example<S> example) {
     return false;
-  }
-
-  @Override
-  public List<DiseasesSymptomes> findBySymptomeIn(List<String> symptomes) {
-    return entity.values()
-      .stream()
-      .filter(el -> symptomes.contains(el.getSymptome()))
-      .collect(Collectors.toList());
   }
 }

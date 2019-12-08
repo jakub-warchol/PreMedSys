@@ -3,21 +3,26 @@ package pl.pwsztar.premedsys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.pwsztar.premedsys.domain.DiseaseFacade;
 import pl.pwsztar.premedsys.dto.DiseasesDto;
+import pl.pwsztar.premedsys.dto.PreMedicalResultsDto;
 import pl.pwsztar.premedsys.dto.SymptomesDto;
 import pl.pwsztar.premedsys.utils.WebPageUtil;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @RequestMapping("/")
 public class PreMedSysController {
+  DiseaseFacade diseaseFacade;
 
   @Autowired
-  DiseaseFacade diseaseFacade;
+  public PreMedSysController(DiseaseFacade diseaseFacade) {
+    this.diseaseFacade = diseaseFacade;
+  }
 
   @RequestMapping(value = "", produces = "text/html")
   @ResponseBody
@@ -27,7 +32,7 @@ public class PreMedSysController {
 
   @GetMapping("diseases")
   @ResponseBody
-  public List<DiseasesDto> getAll() {
+  public List<DiseasesDto> getAllDiseases() {
     return diseaseFacade.getDiseases().toJavaList();
   }
 
@@ -37,5 +42,5 @@ public class PreMedSysController {
 
   @GetMapping("all")
   @ResponseBody
-  public List<DiseasesDto> getDiseasesBySymptomes() {return diseaseFacade.getDiseasesBySymptomesName(io.vavr.collection.List.of("Odksztuszanie plwociny", "Częste oddawanie moczu", "Zamazane lub podwójne widzenie", "Malinowy język")).toJavaList();};
+  public List<PreMedicalResultsDto> getDiseasesBySymptomes() {return diseaseFacade.getDiseasesAndRecommendationsBySymptomesName(Arrays.asList("Duszność", "Zmęczenie", "Zawroty głowy")).toJavaList();};
 }

@@ -12,14 +12,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DiseaseFacadeCreator {
+class DiseaseFacadeCreator {
 
   DiseasesSymptomesRepository symptomesRepository;
   DiseasesRepository diseasesRepository;
   PreMedicalRecommendationRepository recommendationRepository;
 
   @Autowired
-  public DiseaseFacadeCreator(@Qualifier("diseasesSymptomesRepository") DiseasesSymptomesRepository symptomesRepository,
+  DiseaseFacadeCreator(@Qualifier("diseasesSymptomesRepository") DiseasesSymptomesRepository symptomesRepository,
                               DiseasesRepository diseasesRepository,
                               @Qualifier("preMedicalRecommendationRepository") PreMedicalRecommendationRepository recommendationRepository) {
     this.symptomesRepository = symptomesRepository;
@@ -27,7 +27,7 @@ public class DiseaseFacadeCreator {
     this.recommendationRepository = recommendationRepository;
   }
 
- public  DiseaseFacade create(DiseasesSymptomesRepository symptomesRepository, DiseasesRepository diseasesRepository,
+  DiseaseFacade create(DiseasesSymptomesRepository symptomesRepository, DiseasesRepository diseasesRepository,
                        PreMedicalRecommendationRepository recommendationRepository) {
     return DiseaseFacade.builder()
       .diseasesRepository(diseasesRepository)
@@ -37,7 +37,7 @@ public class DiseaseFacadeCreator {
   }
 
   @Bean
-   public DiseaseFacade create() {
+   DiseaseFacade create() {
     return create(symptomesRepository, diseasesRepository, recommendationRepository);
   }
 }

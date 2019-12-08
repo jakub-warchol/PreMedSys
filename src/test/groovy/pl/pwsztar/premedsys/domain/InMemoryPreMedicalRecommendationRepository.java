@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 class InMemoryPreMedicalRecommendationRepository implements PreMedicalRecommendationRepository{
 
@@ -16,6 +17,22 @@ class InMemoryPreMedicalRecommendationRepository implements PreMedicalRecommenda
   public List<PreMedicalRecommendation> findAll() {
     return new ArrayList<>(entity.values());
   }
+
+  @Override
+  public PreMedicalRecommendation save(PreMedicalRecommendation s) {
+    return entity.put(new Random().nextLong(), s);
+  }
+
+  @Override
+  public List<PreMedicalRecommendation> findAllByDiseaseIdIn(List<Long> ids) {
+    List<PreMedicalRecommendation> collect = entity.values().stream()
+      .filter(el -> ids.contains(el.getDiseaseId()))
+      .collect(Collectors.toList());
+    return collect;
+  }
+
+  /*
+  * Unused methods */
 
   @Override
   public List<PreMedicalRecommendation> findAll(Sort sort) {
@@ -55,11 +72,6 @@ class InMemoryPreMedicalRecommendationRepository implements PreMedicalRecommenda
   @Override
   public void deleteAll() {
 
-  }
-
-  @Override
-  public PreMedicalRecommendation save(PreMedicalRecommendation s) {
-    return entity.put(new Random().nextLong(), s);
   }
 
   @Override
