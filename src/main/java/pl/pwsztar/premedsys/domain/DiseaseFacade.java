@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import pl.pwsztar.premedsys.dto.DiseasesDto;
 import pl.pwsztar.premedsys.dto.PreMedicalResultsDto;
 import pl.pwsztar.premedsys.dto.SymptomesDto;
+import pl.pwsztar.premedsys.exception.UnrecognizedSymptomesException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,36 +35,35 @@ public class DiseaseFacade {
       .map(DiseasesSymptomes::dto);
   }
 
-  public List<PreMedicalResultsDto> getDiseasesAndRecommendationsBySymptomesName(java.util.List<String> symptomes) {
+  public List<PreMedicalResultsDto> getDiseasesAndRecommendationsBySymptomesName(java.util.List<String> symptomes) throws UnrecognizedSymptomesException {
     List<Long> symptomeIds = List.ofAll(symptomesRepository.findBySymptomeIn(symptomes))
       .map(DiseasesSymptomes::getDiseaseId);
 
     List<Diseases> diseasesList = List.ofAll(diseasesRepository.findAllById(symptomeIds.toJavaList()));
     if (diseasesList.isEmpty()) {
-      //TODO: exception/either
-      return List.empty();
+      throw new UnrecognizedSymptomesException("Symptomes " + symptomes.toString() + " cannot be recognized by server!");
     }
 
     List<PreMedicalRecommendation> recommendations = List.ofAll(recommendationRepository.findAllByDiseaseIdIn(diseasesList
       .map(Diseases::getDiseaseId).toJavaList()));
 
-    Map<Long, Long> symptomeMap = getSymptomesCountBySymptomeIds(symptomeIds);
-    Map<Long, Double> diseasesSymptomesMap = getAllSymptomesCountBySymptomeIds(symptomeIds);
+    Map<Long, Long> recognizedSymptomesCount = getSymptomesCountBySymptomeIds(symptomeIds);
+    Map<Long, Double> allDiseaseSymptomesCount = getAllSymptomesCountBySymptomeIds(symptomeIds);
 
-    return  getRecognitionResults(diseasesList, recommendations, symptomeMap, diseasesSymptomesMap)
+    return  getRecognitionResults(diseasesList, recommendations, recognizedSymptomesCount, allDiseaseSymptomesCount)
       .filter(distinctByKey(PreMedicalResultsDto::getDiseaseName))
       .sortBy(PreMedicalResultsDto::getDiseaseProbability);
   }
 
   private List<PreMedicalResultsDto> getRecognitionResults(List<Diseases> diseasesList,
                                                            List<PreMedicalRecommendation> recommendations,
-                                                           Map<Long, Long> symptomeMap,
-                                                           Map<Long, Double> diseasesSymptomesMap) {
+                                                           Map<Long, Long> recognizedSymptomesCount,
+                                                           Map<Long, Double> allDiseaseSymptomesCount) {
 
     return recommendations.map(el -> PreMedicalResultsDto.builder()
       .diseaseName(diseasesList
         .filter(diseases -> diseases.getDiseaseId().equals(el.getDiseaseId())).get(0).getDiseaseName())
-      .diseaseProbability(symptomeMap.get(el.getDiseaseId()) / diseasesSymptomesMap.get(el.getDiseaseId()))
+      .diseaseProbability(recognizedSymptomesCount.get(el.getDiseaseId()) / allDiseaseSymptomesCount.get(el.getDiseaseId()))
       .recommendations(el.getRecommendation())
       .build());
   }
@@ -79,7 +79,7 @@ public class DiseaseFacade {
       .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
   }
 
-  private List<DiseasesDto> getDiseasesBySymptomesName(List<String> symptomes) {
+  private List<DiseasesDto> getDiseasesBySymptomesName(List<String> symptomes) throws UnrecognizedSymptomesException {
     List<Long> symptomeIds = List.ofAll(symptomesRepository.findBySymptomeIn(symptomes.toJavaList()))
       .map(DiseasesSymptomes::getDiseaseId);
 
@@ -87,8 +87,7 @@ public class DiseaseFacade {
       .map(Diseases::dto);
 
     if(diseasesList.isEmpty()) {
-      //TODO: exception/either
-      return List.empty();
+      throw new UnrecognizedSymptomesException("Symptomes " + symptomes.toString() + " cannot be recognized by server!");
     }
     return diseasesList;
   }
