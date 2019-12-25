@@ -2,6 +2,7 @@ package pl.pwsztar.premedsys.domain
 
 import io.vavr.collection.List
 import org.junit.Before
+import pl.pwsztar.premedsys.exception.UnrecognizedSymptomesException
 import spock.lang.Specification
 
 class DiseasesRecognizeSpec  extends Specification {
@@ -51,6 +52,13 @@ class DiseasesRecognizeSpec  extends Specification {
       results.map({el -> el.diseaseName}).sorted().toJavaList() == ["Choroba1", "Choroba2"]
   }
 
+  def "user should be able to get exception when he put unrecognized symptomes"() {
+    when: "user selects symptomes"
+      def results = diseaseFacade.getDiseasesBySymptomesName(List.of("Unknown"))
+    then: "exception was thrown"
+      thrown(UnrecognizedSymptomesException)
+  }
+
   def "user should be able to get probable recognition based on symptomes"() {
     when: "user selects symptomes"
       def results = diseaseFacade.getDiseasesAndRecommendationsBySymptomesName(["Symptome2", "Symptome3", "Symptome0"])
@@ -60,5 +68,14 @@ class DiseasesRecognizeSpec  extends Specification {
     and: "user gets disease name"
       results.map({el -> el.diseaseName}).sorted().toJavaList() ==
         ["Choroba0", "Choroba1", "Choroba2"]
+    and: "user gets probability of diseases"
+      results.map({el -> el.diseaseProbability}).sorted().toJavaList() == [0.5, 1.0, 1.0]
+  }
+
+  def "user should be able to get exception when he put unrecognized symptomes during recognition session"() {
+    when: "user selects symptomes"
+      diseaseFacade.getDiseasesAndRecommendationsBySymptomesName(["Unknown"])
+    then: "exception was thrown"
+      thrown(UnrecognizedSymptomesException)
   }
 }
