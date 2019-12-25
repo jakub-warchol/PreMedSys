@@ -10,7 +10,7 @@
     </parent>
     <groupId>pl.pwsztar</groupId>
     <artifactId>premedsys</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>premedsys</name>
     <description>Server for premedical system</description>
 
